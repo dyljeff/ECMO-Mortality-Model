@@ -7,3 +7,6 @@ admit=merge(admit,PRISM3[,c("Case Index Id", "High Heart Rate (bpm)")],all.x = T
 admit=merge(admit,PRISM3[,c("Case Index Id", "High Heart Rate Unknown")],all.x = TRUE, all.y = FALSE)
 admit=merge(admit,PRISM3[,c("Case Index Id", "Low Heart Rate (bpm)")],all.x = TRUE, all.y = FALSE)
 admit=merge(admit,PRISM3[,c("Case Index Id", "Low Heart Rate Unknown")],all.x = TRUE, all.y = FALSE)
+
+columns_to_merge = c("Case Index Id", "PRISM 3 Probability of Death", "High Systolic Blood Pressure (mmHg)", "High Systolic Blood Pressure Unknown", "Low Systolic Blood Pressure (mmHg)", "Low Systolic Blood Pressure Unknown", "High Heart Rate (bpm)", "High Heart Rate Unknown", "Low Heart Rate (bpm)", "Low Heart Rate Unknown")
+admit = merge(admit, PRISM3[, columns_to_merge], all.x = TRUE, all.y = FALSE)
