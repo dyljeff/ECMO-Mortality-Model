@@ -224,8 +224,8 @@ print_uni_log_reg(univ_high_creat_all, caption = "High Creatinine (mg/dL)")
 <<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
 
 plt_high_bun_all1
-plt_high_bun_all1
+plt_high_bun_all2
 print_comparison_tests(test_high_bun_all, caption = "High Blood Urea Nitrogen (mg/dL)")
-print_uni_log_reg(univ_high_bun_all1, caption = "High Blood Urea Nitrogen (mg/dL)")
+print_uni_log_reg(univ_high_bun_all, caption = "High Blood Urea Nitrogen (mg/dL)")
 
 @
