@@ -1,0 +1,231 @@
+\chapter{Exploratory Analysis}
+
+\minitoc
+\vspace{10 mm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section{Demographics \& Admission Fields}
+
+\subsection{Age Group}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=6, out.width="7in", out.height="6in", warning=FALSE>>=
+
+plt_age_all
+print_table(tbl_age_all, caption = "Age Group")
+
+@
+
+\clearpage
+\subsection{Sex Assigned at Birth}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_sex_all
+print_table(tbl_sex_all, caption = "Sex Assigned at Birth")
+
+@
+
+\clearpage
+\subsection{Race}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=6, out.width="7in", out.height="6in", warning=FALSE>>=
+
+plt_race_all
+print_table(tbl_race_all, caption = "Race")
+
+@
+
+\clearpage
+\subsection{Ethnicity}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=4, out.width="7in", out.height="4in", warning=FALSE>>=
+
+plt_ethnicity_all
+print_table(tbl_ethnicity_all, caption = "Ethnicity")
+
+@
+
+\clearpage
+\subsection{Weight}
+
+\subsubsection{Weight: Overall}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_weight_all1
+plt_weight_all2
+print_comparison_tests(test_weight_all, caption = "Weight: Overall")
+print_uni_log_reg(univ_weight_all, caption = "Weight: Overall")
+
+@
+
+\clearpage
+\subsubsection{Weight: Neonates}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_weight_neonates1
+plt_weight_neonates2
+print_comparison_tests(test_weight_neonates, caption = "Weight: Neonates")
+print_uni_log_reg(univ_weight_neonates, caption = "Weight: Neonates")
+
+@
+
+\clearpage
+\subsubsection{Weight: Non-Neonates}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_weight_non_neonates1
+plt_weight_non_neonates2
+print_comparison_tests(test_weight_non_neonates, caption = "Weight: Non-Neonates")
+print_uni_log_reg(univ_weight_non_neonates, caption = "Weight: Non-Neonates")
+
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section{Procedure Variables}
+
+\subsection{VA ECMO}
+
+\subsubsection{VA ECMO: Overall}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_ecmo_va_all
+print_table(tbl_ecmo_va_all, caption = "VA ECMO: Overall")
+
+@
+
+\subsubsection{VA ECMO: Neonates}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_ecmo_va_neonates
+print_table(tbl_ecmo_va_neonates, caption = "VA ECMO: Neonates")
+
+@
+
+\clearpage
+\subsection{VV ECMO}
+
+\subsubsection{VV ECMO: Overall}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_ecmo_vv_all
+print_table(tbl_ecmo_vv_all, caption = "VV ECMO: Overall")
+
+@
+
+\subsubsection{VV ECMO: Neonates}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_ecmo_vv_neonates
+print_table(tbl_ecmo_vv_neonates, caption = "VV ECMO: Neonates")
+
+@
+
+\clearpage
+\subsection{eCPR}
+
+\subsubsection{eCPR: Overall}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_cpr60_all
+print_table(tbl_cpr60_all, caption = "eCPR: Overall")
+
+@
+
+\subsubsection{eCPR: Neonates}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_cpr60_neonates
+print_table(tbl_cpr60_neonates, caption = "eCPR: Neonates")
+
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section{PRISM III Labs}
+
+\subsection{Low Systolic Blood Pressure (mmHg)}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_low_sbp_all1
+plt_low_sbp_all2
+print_comparison_tests(test_low_sbp_all, caption = "Low Systolic Blood Pressure (mmHg)")
+print_uni_log_reg(univ_low_sbp_all, caption = "Low Systolic Blood Pressure (mmHg)")
+
+@
+
+\clearpage
+\subsection{High Systolic Blood Pressure (mmHg)}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_high_sbp_all1
+plt_high_sbp_all2
+print_comparison_tests(test_high_sbp_all, caption = "High Systolic Blood Pressure (mmHg)")
+print_uni_log_reg(univ_high_sbp_all, caption = "High Systolic Blood Pressure (mmHg)")
+
+@
+
+\clearpage
+\subsection{Low Heart Rate (bpm)}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_low_bpm_all1
+plt_low_bpm_all2
+print_comparison_tests(test_low_bpm_all, caption = "Low Heart Rate (bpm)")
+print_uni_log_reg(univ_low_bpm_all, caption = "Low Heart Rate (bpm)")
+
+@
+
+\clearpage
+\subsection{High Heart Rate (bpm)}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_high_bpm_all1
+plt_high_bpm_all2
+print_comparison_tests(test_high_bpm_all, caption = "High Heart Rate (bpm)")
+print_uni_log_reg(univ_high_bpm_all, caption = "High Heart Rate (bpm)")
+
+@
+
+\clearpage
+\subsection{Low PaO2 (mmHg)}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_low_pao2_all1
+plt_low_pao2_all2
+print_comparison_tests(test_low_pao2_all, caption = "Low PaO2 (mmHg)")
+print_uni_log_reg(univ_low_pao2_all, caption = "Low PaO2 (mmHg)")
+
+@
+
+\clearpage
+\subsection{High Platelet Count (10(9)/L)}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_high_platelet_all1
+plt_high_platelet_all2
+print_comparison_tests(test_high_platelet_all, caption = "High Platelet Count (10(9)/L)")
+print_uni_log_reg(univ_high_platelet_all, caption = "High Platelet Count (10(9)/L)")
+
+@
+
+\clearpage
+\subsection{High Creatinine (mg/dL)}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_high_creat_all1
+plt_high_creat_all2
+print_comparison_tests(test_high_creat_all, caption = "High Creatinine (mg/dL)")
+print_uni_log_reg(univ_high_creat_all, caption = "High Creatinine (mg/dL)")
+
+@
+
+\clearpage
+\subsection{High Blood Urea Nitrogen (mg/dL)}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+plt_high_bun_all1
+plt_high_bun_all1
+print_comparison_tests(test_high_bun_all, caption = "High Blood Urea Nitrogen (mg/dL)")
+print_uni_log_reg(univ_high_bun_all1, caption = "High Blood Urea Nitrogen (mg/dL)")
+
+@
