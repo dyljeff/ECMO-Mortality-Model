@@ -102,6 +102,6 @@ test_high_creat_all <- comparison_tests(admit_PRISM3,"High Creatinine (mg/dL)")
 univ_high_creat_all <- uni_log_reg(admit_PRISM3,"`High Creatinine (mg/dL)`")
 
 plt_high_bun_all1 <- create_scatter(admit_PRISM3,"High Blood Urea Nitrogen (mg/dL)","Outcome", "PRISM3 Patients")
-plt_high_bun_all1 <- create_histogram(admit_PRISM3, "High Blood Urea Nitrogen (mg/dL)", "PRISM 3 Patients")
+plt_high_bun_all2 <- create_histogram(admit_PRISM3, "High Blood Urea Nitrogen (mg/dL)", "PRISM 3 Patients")
 test_high_bun_all <- comparison_tests(admit_PRISM3,"High Blood Urea Nitrogen (mg/dL)")
-univ_high_bun_all1 <- uni_log_reg(admit_PRISM3,"`High Blood Urea Nitrogen (mg/dL)`")
+univ_high_bun_all <- uni_log_reg(admit_PRISM3,"`High Blood Urea Nitrogen (mg/dL)`")
