@@ -5,6 +5,5 @@ comparison_tests <- function(data,var) {
   t_test_result <- t.test(survived, died)
   wilcox_test_result <- wilcox.test(survived, died)
   
-  print(t_test_result)
-  print(wilcox_test_result)
+  return(list(t_test_result, wilcox_test_result))
 }
