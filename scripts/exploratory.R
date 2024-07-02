@@ -2,6 +2,9 @@ require(ggplot2)
 require(rlang)
 require(xtable)
 require(dplyr)
+require(tidyr)
+
+setwd("C:/Users/SAAS_User/Documents/VPS/ECMO-Mortality-Model")
 
 source("functions/create_table.r")
 source("functions/create_bar_graph.r")
@@ -19,6 +22,8 @@ source("functions/print_table.r")
 source("functions/print_uni_log_reg.r")
 
 source("functions/load_data.r")
+source("functions/create_summary.r")
+source("functions/sum_stats.r")
 
 #### Demographics ####
 plt_race_all <- create_bar_graph(admit, "Outcome", "Race")
@@ -105,3 +110,21 @@ plt_high_bun_all1 <- create_scatter(admit_PRISM3,"High Blood Urea Nitrogen (mg/d
 plt_high_bun_all2 <- create_histogram(admit_PRISM3, "High Blood Urea Nitrogen (mg/dL)", "PRISM 3 Patients")
 test_high_bun_all <- comparison_tests(admit_PRISM3,"High Blood Urea Nitrogen (mg/dL)")
 univ_high_bun_all <- uni_log_reg(admit_PRISM3,"`High Blood Urea Nitrogen (mg/dL)`")
+
+# new things
+
+create_bar_graph(admit, "Outcome", "Discharge Year")
+create_table(admit, "Discharge Year", "Outcome")
+
+create_summary(admit,"Physical Length of Stay (Days)", "Outcome")
+create_summary(admit,"Medical Length of Stay (Days)", "Outcome")
+create_summary(admit_PRISM3,"PRISM 3 Length of Stay (Days)", "Outcome")
+create_summary(admit_PRISM3,"PRISM 3 Probability of Death", "Outcome")
+create_summary(proc_ecmo, "Procedure Duration (Constrained to ICU Stay Days)", "Outcome")
+
+sum_stats(admit,"Physical Length of Stay (Days)")
+sum_stats(admit,"Medical Length of Stay (Days)")
+sum_stats(admit_PRISM3,"PRISM 3 Length of Stay (Days)")
+sum_stats(admit_PRISM3,"PRISM 3 Probability of Death")
+sum_stats(proc_ecmo, "Procedure Duration (Constrained to ICU Stay Days)")
+
