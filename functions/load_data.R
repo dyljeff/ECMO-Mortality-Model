@@ -1,10 +1,12 @@
+#### Load data ####
 admit <- read.csv("Data/Files/Admission_and_Discharge.csv", check.names = FALSE)
 PIM <- read.csv("Data/Files/PIM.csv", check.names = FALSE)
-diagnosis <- read.csv("Data/Files/Diagnosis.csv", check.names = FALSE)
 PRISM3 <- read.csv("Data/Files/PRISM3.csv", check.names = FALSE)
 proc <- read.csv(file = "Data/Files/Procedure.csv", check.names = FALSE)
 proc_vars <- read.csv(file = "Data/Files/Procedure_Variables.csv", check.names = FALSE)
 
+
+#### Get necessary fields #### 
 columns_to_merge <- c(
   "Case Index Id", "PRISM 3 Probability of Death", 
   "High Systolic Blood Pressure (mmHg)", "High Systolic Blood Pressure Unknown", 
@@ -26,10 +28,6 @@ admit$has_ecmo_va <- (admit$`Case Index Id` %in%
   ecmo[ecmo$`Variable Name` == "VA ECMO" & !is.na(ecmo$`Variable Name`), ]$`Case Index Id.x`)
 admit$has_ecmo_vv <- (admit$`Case Index Id` %in%
   ecmo[ecmo$`Variable Name` == "VV ECMO" & !is.na(ecmo$`Variable Name`), ]$`Case Index Id.x`)
-
-proc <- merge(proc, admit[c("Case Index Id", "Outcome")], all.x = TRUE, all.y = FALSE)
-
-proc_ecmo <- proc[proc$`Procedure Name` == "ECMO", ]
 
 cpr <- proc[proc$`Procedure Code` == 133, ]
 admit$has_cpr_within_60min <- FALSE
@@ -54,25 +52,28 @@ for (i in 1:nrow(cpr)) {
 }
 remove(cpr, ecmo, case_ecmo)
 
+
+#### Transform data ####
+admit <- make_numeric(admit, "Medical Length of Stay (Days)")
+admit <- make_numeric(admit, "High Heart Rate (bpm)")
+admit <- make_numeric(admit, "Low Heart Rate (bpm)")
+admit <- make_numeric(admit, "Low Systolic Blood Pressure (mmHg)")
+admit <- make_numeric(admit, "High Systolic Blood Pressure (mmHg)")
+admit <- make_numeric(admit, "Low PaO2 (mmHg)")
+admit <- make_numeric(admit, "High Platelet Count (10(9)/L)")
+admit <- make_numeric(admit, "Low Platelet Count (10(9)/L)")
+admit <- make_numeric(admit, "High Creatinine (mg/dL)")
+admit <- make_numeric(admit, "High Blood Urea Nitrogen (mg/dL)")
+proc <- make_numeric(proc, "Procedure Duration (Constrained to ICU Stay Days)")
+
+
+#### Filter data ####
+proc <- merge(proc, admit[c("Case Index Id", "Outcome")], all.x = TRUE, all.y = FALSE)
+proc_ecmo <- proc[proc$`Procedure Name` == "ECMO", ]
+
 admit_excluding_neonates <- admit[admit$`Age at ICU Admission` != "Neonate Birth to 29 days", ]
 admit_only_neonates <- admit[admit$`Age at ICU Admission` == "Neonate Birth to 29 days", ]
 
-admit <- make_numeric(admit, "Medical Length of Stay (Days)")
-proc_ecmo <- make_numeric(proc_ecmo, "Procedure Duration (Constrained to ICU Stay Days)")
-
 admit_PRISM3 <- admit[admit$`Collects PRISM 3` != 0, ]
-
-admit_PRISM3 <- make_numeric(admit_PRISM3, "High Heart Rate (bpm)")
-admit_PRISM3 <- make_numeric(admit_PRISM3, "Low Heart Rate (bpm)")
-admit_PRISM3 <- make_numeric(admit_PRISM3, "Low Systolic Blood Pressure (mmHg)")
-admit_PRISM3 <- make_numeric(admit_PRISM3, "High Systolic Blood Pressure (mmHg)")
-admit_PRISM3 <- make_numeric(admit_PRISM3, "Low PaO2 (mmHg)")
-# admit_PRISM3 <- make_numeric(admit_PRISM3, "Low PaO2 (kPa)")
-admit_PRISM3 <- make_numeric(admit_PRISM3, "High Platelet Count (10(9)/L)")
-admit_PRISM3 <- make_numeric(admit_PRISM3, "Low Platelet Count (10(9)/L)")
-admit_PRISM3 <- make_numeric(admit_PRISM3, "High Creatinine (mg/dL)")
-admit_PRISM3 <- make_numeric(admit_PRISM3, "High Blood Urea Nitrogen (mg/dL)")
-
-
 admit_PRISM3_excluding_neonates <- admit_PRISM3[admit_PRISM3$`Age at ICU Admission` != "Neonate Birth to 29 days", ]
 admit_PRISM3_only_neonates <- admit_PRISM3[admit_PRISM3$`Age at ICU Admission` == "Neonate Birth to 29 days", ]
