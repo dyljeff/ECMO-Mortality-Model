@@ -80,6 +80,19 @@ print_uni_log_reg(univ_weight_non_neonates, caption = "Weight: Non-Neonates")
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
+\section{Discharge Year}
+
+\subsection{Discharge Year}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=6, out.width="7in", out.height="6in", warning=FALSE>>=
+
+plt_outcome_by_year
+print_table(tbl_outcome_by_year, caption = "Discharge Year")
+
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
 \section{Procedure Variables}
 
 \subsection{VA ECMO}
@@ -135,6 +148,46 @@ print_table(tbl_cpr60_all, caption = "eCPR: Overall")
 
 plt_cpr60_neonates
 print_table(tbl_cpr60_neonates, caption = "eCPR: Neonates")
+
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section{Clinical Outcomes}
+
+\subsection{Physical Length of Stay (Days)}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+print_sum_stats(sum_plos2, caption = "Physical Length of Stay (Days)")
+
+@
+
+\subsection{Medical Length of Stay (Days)}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+print_sum_stats(sum_mlos2, caption = "Medical Length of Stay (Days)")
+
+@
+
+\subsection{PRISM 3 Length of Stay (Days)}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+print_sum_stats(sum_prism3los2, caption = "PRISM 3 Length of Stay (Days)")
+
+@
+
+\subsection{PRISM 3 Probability of Death}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+print_sum_stats(sum_prism3pod2, caption = "PRISM 3 Probability of Death")
+
+@
+
+\subsection{ECMO Procedure Duration (Constrained to ICU Stay Days)}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=7, fig.height=3, out.width="7in", out.height="3in", warning=FALSE>>=
+
+print_sum_stats(sum_ecmo_duration2, caption = "ECMO Procedure Duration (Constrained to ICU Stay Days)")
 
 @
 
