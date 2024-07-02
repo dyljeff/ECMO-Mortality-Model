@@ -15,7 +15,8 @@ columns_to_merge <- c(
   "High Platelet Count (10(9)/L)", "High Platelet Count Unknown", 
   "Low Platelet Count (10(9)/L)", "Low Platelet Count Unknown", 
   "High Creatinine (mg/dL)", "High Creatinine Unknown", 
-  "High Blood Urea Nitrogen (mg/dL)", "High Blood Urea Nitrogen Unknown"
+  "High Blood Urea Nitrogen (mg/dL)", "High Blood Urea Nitrogen Unknown",
+  "PRISM 3 Length of Stay (Days)"
 )
 admit <- merge(admit, PRISM3[, columns_to_merge], all.x = TRUE, all.y = FALSE)
 
@@ -25,6 +26,10 @@ admit$has_ecmo_va <- (admit$`Case Index Id` %in%
   ecmo[ecmo$`Variable Name` == "VA ECMO" & !is.na(ecmo$`Variable Name`), ]$`Case Index Id.x`)
 admit$has_ecmo_vv <- (admit$`Case Index Id` %in%
   ecmo[ecmo$`Variable Name` == "VV ECMO" & !is.na(ecmo$`Variable Name`), ]$`Case Index Id.x`)
+
+proc <- merge(proc, admit[c("Case Index Id", "Outcome")], all.x = TRUE, all.y = FALSE)
+
+proc_ecmo <- proc[proc$`Procedure Name` == "ECMO", ]
 
 cpr <- proc[proc$`Procedure Code` == 133, ]
 admit$has_cpr_within_60min <- FALSE
@@ -52,6 +57,9 @@ remove(cpr, ecmo, case_ecmo)
 admit_excluding_neonates <- admit[admit$`Age at ICU Admission` != "Neonate Birth to 29 days", ]
 admit_only_neonates <- admit[admit$`Age at ICU Admission` == "Neonate Birth to 29 days", ]
 
+admit <- make_numeric(admit, "Medical Length of Stay (Days)")
+proc_ecmo <- make_numeric(proc_ecmo, "Procedure Duration (Constrained to ICU Stay Days)")
+
 admit_PRISM3 <- admit[admit$`Collects PRISM 3` != 0, ]
 
 admit_PRISM3 <- make_numeric(admit_PRISM3, "High Heart Rate (bpm)")
@@ -64,6 +72,7 @@ admit_PRISM3 <- make_numeric(admit_PRISM3, "High Platelet Count (10(9)/L)")
 admit_PRISM3 <- make_numeric(admit_PRISM3, "Low Platelet Count (10(9)/L)")
 admit_PRISM3 <- make_numeric(admit_PRISM3, "High Creatinine (mg/dL)")
 admit_PRISM3 <- make_numeric(admit_PRISM3, "High Blood Urea Nitrogen (mg/dL)")
+
 
 admit_PRISM3_excluding_neonates <- admit_PRISM3[admit_PRISM3$`Age at ICU Admission` != "Neonate Birth to 29 days", ]
 admit_PRISM3_only_neonates <- admit_PRISM3[admit_PRISM3$`Age at ICU Admission` == "Neonate Birth to 29 days", ]
