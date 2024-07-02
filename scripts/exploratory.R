@@ -4,8 +4,6 @@ require(xtable)
 require(dplyr)
 require(tidyr)
 
-setwd("C:/Users/SAAS_User/Documents/VPS/ECMO-Mortality-Model")
-
 source("functions/create_table.r")
 source("functions/create_bar_graph.r")
 source("functions/create_scatter.r")
@@ -13,17 +11,18 @@ source("functions/create_histogram.r")
 source("functions/comparison_tests.r")
 source("functions/uni_log_reg.r")
 source("functions/make_numeric.r")
+source("functions/create_summary.r")
+source("functions/sum_stats.r")
 source("functions/pretty_decimal.r")
 source("functions/pretty_integer.r")
 source("functions/pretty_latex.r")
 source("functions/pretty_pvalue.r")
 source("functions/print_comparison_tests.r")
+source("functions/print_sum_stats.r")
 source("functions/print_table.r")
 source("functions/print_uni_log_reg.r")
 
 source("functions/load_data.r")
-source("functions/create_summary.r")
-source("functions/sum_stats.r")
 
 #### Demographics ####
 plt_race_all <- create_bar_graph(admit, "Outcome", "Race")
@@ -111,20 +110,18 @@ plt_high_bun_all2 <- create_histogram(admit_PRISM3, "High Blood Urea Nitrogen (m
 test_high_bun_all <- comparison_tests(admit_PRISM3,"High Blood Urea Nitrogen (mg/dL)")
 univ_high_bun_all <- uni_log_reg(admit_PRISM3,"`High Blood Urea Nitrogen (mg/dL)`")
 
-# new things
+#### Summary Statistics ####
+plt_outcome_by_year <- create_bar_graph(admit, "Outcome", "Discharge Year")
+tbl_outcome_by_year <- create_table(admit, "Discharge Year", "Outcome")
 
-create_bar_graph(admit, "Outcome", "Discharge Year")
-create_table(admit, "Discharge Year", "Outcome")
+sum_plos1 <- create_summary(admit,"Physical Length of Stay (Days)", "Outcome")
+sum_mlos1 <- create_summary(admit,"Medical Length of Stay (Days)", "Outcome")
+sum_prism3los1 <- create_summary(admit_PRISM3,"PRISM 3 Length of Stay (Days)", "Outcome")
+sum_prism3pod1 <- create_summary(admit_PRISM3,"PRISM 3 Probability of Death", "Outcome")
+sum_ecmo_duration1 <- create_summary(proc_ecmo, "Procedure Duration (Constrained to ICU Stay Days)", "Outcome")
 
-create_summary(admit,"Physical Length of Stay (Days)", "Outcome")
-create_summary(admit,"Medical Length of Stay (Days)", "Outcome")
-create_summary(admit_PRISM3,"PRISM 3 Length of Stay (Days)", "Outcome")
-create_summary(admit_PRISM3,"PRISM 3 Probability of Death", "Outcome")
-create_summary(proc_ecmo, "Procedure Duration (Constrained to ICU Stay Days)", "Outcome")
-
-sum_stats(admit,"Physical Length of Stay (Days)")
-sum_stats(admit,"Medical Length of Stay (Days)")
-sum_stats(admit_PRISM3,"PRISM 3 Length of Stay (Days)")
-sum_stats(admit_PRISM3,"PRISM 3 Probability of Death")
-sum_stats(proc_ecmo, "Procedure Duration (Constrained to ICU Stay Days)")
-
+sum_plos2 <- sum_stats(admit,"Physical Length of Stay (Days)")
+sum_mlos2 <- sum_stats(admit,"Medical Length of Stay (Days)")
+sum_prism3los2 <- sum_stats(admit_PRISM3,"PRISM 3 Length of Stay (Days)")
+sum_prism3pod2 <- sum_stats(admit_PRISM3,"PRISM 3 Probability of Death")
+sum_ecmo_duration2 <- sum_stats(proc_ecmo, "Procedure Duration (Constrained to ICU Stay Days)")
