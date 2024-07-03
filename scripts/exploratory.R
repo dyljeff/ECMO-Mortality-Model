@@ -24,6 +24,8 @@ source("functions/print_uni_log_reg.r")
 
 source("functions/load_data.r")
 
+setwd("C:/Users/SAAS_User/Documents/VPS/ECMO-Mortality-Model")
+
 #### Demographics ####
 plt_race_all <- create_bar_graph(admit, "Outcome", "Race")
 tbl_race_all <- create_table(admit, "Race", "Outcome")
