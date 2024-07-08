@@ -35,6 +35,8 @@ pim_columns_to_merge <- c(
   "Systolic Blood Pressure",
   "PaO2 (mmHg)",
   "FiO2",
+  "PIM2 Recovery from Surgery",
+  "Admitted Following Cardiac Bypass - PIM2/PIM3", 
   "PIM3 - No Very High Risk Dx",       
   "PIM3 - No High Risk Dx",    
   "PIM3 - No Low Risk Dx"    
@@ -88,12 +90,28 @@ admit$systolic_bp_sq <- admit[["Systolic Blood Pressure"]]^2
 
 admit <- make_numeric(admit, "PIM3 - No Very High Risk Dx")
 
+admit <- make_numeric(admit, "FiO2")
+admit <- make_numeric(admit, "PaO2 (mmHg)")
+admit$fio_100_pao2 <- 100 * admit[["FiO2"]] / admit[["PaO2 (mmHg)"]]
+admit$fio_100_pao2[is.na(admit$fio_100_pao2)] <- 0.23
+
+admit$Died <- admit$Outcome
+admit$Died <- ifelse(admit$Died == "Died", 1, 0)
+
+admit <- make_numeric(admit, "Admission from Inpatient Unit")
+admit <- make_numeric(admit, "Post-Operative")
+admit <- make_numeric(admit, "Acute Diabetes")
+admit <- make_numeric(admit, "Cardiac Massage Prior to ICU Admission")
+admit <- make_numeric(admit, "Admitted Following Cardiac Bypass - PIM2/PIM3")
+
 admit[["Admission from Inpatient Unit"]][is.na(admit[["Admission from Inpatient Unit"]])] <- 0
 admit[["Acute Diabetes"]][is.na(admit[["Acute Diabetes"]])] <- 0
 admit[["Cardiac Massage Prior to ICU Admission"]][is.na(admit[["Cardiac Massage Prior to ICU Admission"]])] <- 0
 admit[["Post-Operative"]][is.na(admit[["Post-Operative"]])] <- 0
 admit[["base_excess_abs"]][is.na(admit[["base_excess_abs"]])] <- 0
+admit[["PIM2 Recovery from Surgery"]][is.na(admit[["PIM2 Recovery from Surgery"]])] <- 0
 admit[["PIM3 - No Very High Risk Dx"]][is.na(admit[["PIM3 - No Very High Risk Dx"]])] <- 0
+admit[["Admitted Following Cardiac Bypass - PIM2/PIM3"]][is.na(admit[["Admitted Following Cardiac Bypass - PIM2/PIM3"]])] <- 0
 
 #### Transform data ####
 admit <- make_numeric(admit, "High Heart Rate (bpm)")
@@ -110,7 +128,7 @@ admit <- make_numeric(admit, "PRISM 3 Score")
 admit_filter <- admit[admit$`Collects PRISM 3` != 0, ]
 
 col_model_1 <- c(
-  "Outcome",
+  "Died",
   "PRISM 3 Score",
   "prism3score_sq",
   "Admission from Inpatient Unit",
@@ -123,8 +141,13 @@ col_model_1 <- c(
   "base_excess_abs",
   "Systolic Blood Pressure",
   "systolic_bp_sq",
+  "fio_100_pao2",
+  "PIM2 Recovery from Surgery",
+  "Admitted Following Cardiac Bypass - PIM2/PIM3", 
   "PIM3 - No Very High Risk Dx",       
   "PIM3 - No High Risk Dx",    
   "PIM3 - No Low Risk Dx"  
 )
 model_1 <- admit_filter[, col_model_1]
+
+
