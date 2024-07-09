@@ -1,0 +1,27 @@
+\clearpage
+\chapter{Modeling}
+\minitoc
+\vspace{10 mm}
+
+
+<<modeling_background_section, child='./modeling_background.Rnw', vps_LogExecutionTime=TRUE, eval=TRUE>>=
+
+@
+
+
+<<results="asis", echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE>>=
+
+model_name = "Model 1: All PIM3/PRISM III Variables"
+
+model = log_reg_model1
+train = training1
+test = testing1
+ROC = roc_obj1
+HOSLEM = hl_test1
+GIVITI = giviti_belt1
+
+@
+  
+<<modeling_model1_section, child='./modeling_results.Rnw', vps_LogExecutionTime=TRUE, eval=TRUE>>=
+
+@

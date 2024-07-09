@@ -1,0 +1,101 @@
+\clearpage
+\section{Background on Logistic Regression}
+
+Logistic regression is a statistical method used to model the relationship between a dichotomous (i.e. binary) dependent variable and one or more predictor variables called independent variables. In this project, the dependent variable is whether or not a patient died while the independent variables are risk factors associated with mortality.\\
+
+
+\subsection*{Linear Regression Equation}
+
+\noindent So what does this relationship look like? An equation!\\
+\\
+\noindent As a reminder, multiple linear regression is just a riff off of $y=mx+b$. It looks something like this: 
+  \begin{align}
+  Died &= \beta_0 + \beta_1 PRISM3Score + \beta_2 Neonate + \beta_3 AcuteDiabetes + \ldots + \beta_n SystolicBloodPressure \notag
+  \end{align}
+
+\noindent In linear regression, interpreting the coefficients is pretty straightforward:
+  \begin{itemize}
+    \item If we increase PRISM III score by 1, then our outcome mortality will increase by $\beta_1$.
+    \item If the case is a neonate, then our outcome mortality will increase by $\beta_2$. 
+  \end{itemize}
+
+\noindent Unfortunately, linear regression will return a continuous prediction for mortality, at times negative. So, we turn to logistic regression to transform this prediction into a probability and then finally, a classification of died or survived.\\
+
+
+\subsection*{Logistic Regression Equation}
+
+\noindent So what does logistic regression look like? Also an equation! 
+  \begin{align}
+  logit(p) &= \beta_0 + \beta_1 PRISM3Score + \beta_2 Neonate + \beta_3 AcuteDiabetes + \ldots + \beta_n SystolicBloodPressure \notag
+  \end{align}
+
+\noindent where:\\
+\\
+\hspace*{3em}
+  \begin{tabular}{ll}
+    $logit(p)$ & is the log-odds, $log(\frac{p}{1-p})$ \\
+    $p$ & is the probability of success (died) \\
+    $1-p$ & is the probability of failure (survived) \\
+    $\frac{p}{1-p}$ & is the odds, the ratio of the probability of success to the probability of failure
+  \end{tabular}\\
+\\
+\noindent We can interpret the coefficients of a logistic regression similarly to that of a linear regression:
+  \begin{itemize}
+    \item If we increase PRISM III score by 1, then the \textit{log-odds} will increase by $\beta_1$. 
+    \item If the case is a neonate, then the \textit{log-odds} will increase by $\beta_2$. 
+  \end{itemize}
+
+\noindent Or, we can apply the exponential function so the coefficients will have a more intuitive interpretation: 
+  \begin{itemize}
+    \item If we increase PRISM III score by 1, then the \textit{odds} will increase by $exp(\beta_1)$. 
+    \item If the case is a neonate, then the \textit{odds} will increase by $exp(\beta_2)$. 
+  \end{itemize}
+
+\noindent As a reminder, an odds ratio of 1 implies no association between the variable and the outcome. An odds ratio $>$ 1 implies a positive relationship/higher odds while $<$ 1 implies a negative relationship/lower odds.\\
+\\
+\noindent But let's not lose sight of our final aim. The final piece of our logistic regression puzzle is to predict the probability of our outcome mortality. Probabilities are between 0 and 1 so all we have to do is perform a mathematical transformation to get our prediction to fall into this range:
+  \begin{align}
+  P(Died) = \frac{1}{1 + exp(-(\beta_0 + \beta_1 PRISM3Score + \beta_2 Neonate + \beta_3 AcuteDiabetes + \ldots + \beta_n SystolicBloodPressure))} \notag
+  \end{align}
+
+
+\subsection*{Model Building}
+
+\noindent So we have a shiny new equation, but how do we use it?\\
+\\
+\noindent Here is a brief overview of the modeling steps (with a sufficiently large dataset): 
+
+  \begin{enumerate}
+
+  \item \textbf{Separate the data into independent training and testing sets.} This separation is done at random; a very common split is 75\% of the data falling into the training set and 25\% into the testing set. 
+
+  \item \textbf{Fit the model using the training set.} It is very important that the coefficients are built on \textit{only} the training set. 
+
+  \item \textbf{Evaluate the model using the testing set.} The testing set is tucked away until we are ready to measure model performance; it will help determine if the model is able to generalize to new data. It is very important that the testing set remains ``unseen'' until the model evaluation step as we do not want to contaminate the model-building process or bias the performance assessment.
+
+  \end{enumerate}
+
+
+\subsection*{Model Validation}
+
+\noindent So we have a shiny new model, but is it any good?\\
+\\
+\noindent Here are a few markings of a good model that we would like to see in the upcoming sections:
+
+  \begin{itemize}
+
+  \item \textbf{Significant P-Values (p$<$0.05).} We like to see that our risk factors have a significant impact in predicting our outcome; nonsignificant variables will often be removed to simplify the model (simple is good!). 
+
+  \item \textbf{Variance Inflation Factor (VIF) $<$ 5.} VIFs let us know if we have a multicollinearity problem which is when variables are highly correlated with one another. Multicollinearity can result in model instability and misinterpretation (coefficients might change direction and variables might steal each other's effect sizes). 
+
+  \item \textbf{Standardized Mortality Ratio close to 1.} This is the ratio of observed to predicted; a ratio of 1 implies the model is performing well for the population as a whole.  
+
+  \item \textbf{Decent Area Under the Receiver Operating Characteristic Curve (AUROC).} Something like 70\% would probably be considered good discrimination while 50\% is no better than flipping a coin. \textit{Discrimination measures how well we can classify the died vs survived patients.}
+
+  \item \textbf{Nonsignificant Hosmer-Lemeshow Goodness-of-Fit Test (p$\geq$0.05).} Nonsignificant indicates the model is well-calibrated. Unfortunately, this test is sensitive to large sample sizes, resulting in small deviations in prediction to be considered significant. \textit{Calibration measures how accurately the estimated probabilities match the true outcome.}
+
+  \item \textbf{GiViTI Calibration Belt.} We like to see a nonsignificant p-value (p$\geq$0.05), calibration belts that do not cross the bisector, and fairly tight bands. 
+
+  \item \textbf{10-Fold Cross Validation.} We split the full dataset into 10 independent subsets or ``folds''. We perform the model training process 10 times, allowing each fold to be the training set once. Accuracy is calculated for each iteration and then averaged (1 is perfect). Kappa is calculated for each iteration and then averaged (0.2 is fair, 1 is perfect). Kappa assesses inter-rater reliability and is great when you have an imbalanced dataset since accuracy can be misleading when one class dominates another.   
+
+  \end{itemize}
