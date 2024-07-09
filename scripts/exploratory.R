@@ -1,31 +1,3 @@
-require(ggplot2)
-require(rlang)
-require(xtable)
-require(dplyr)
-require(tidyr)
-
-source("functions/create_table.r")
-source("functions/create_bar_graph.r")
-source("functions/create_scatter.r")
-source("functions/create_histogram.r")
-source("functions/comparison_tests.r")
-source("functions/uni_log_reg.r")
-source("functions/make_numeric.r")
-source("functions/create_summary.r")
-source("functions/sum_stats.r")
-source("functions/pretty_decimal.r")
-source("functions/pretty_integer.r")
-source("functions/pretty_latex.r")
-source("functions/pretty_pvalue.r")
-source("functions/print_comparison_tests.r")
-source("functions/print_sum_stats.r")
-source("functions/print_table.r")
-source("functions/print_uni_log_reg.r")
-
-source("functions/load_data.r")
-
-setwd("C:/Users/SAAS_User/Documents/VPS/ECMO-Mortality-Model")
-
 #### Demographics ####
 plt_race_all <- create_bar_graph(admit, "Outcome", "Race")
 tbl_race_all <- create_table(admit, "Race", "Outcome")

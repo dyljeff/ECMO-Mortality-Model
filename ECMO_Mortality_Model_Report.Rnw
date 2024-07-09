@@ -1,6 +1,8 @@
 <<data_setup, echo=FALSE, results ="hide", cache=FALSE, warning=FALSE, message=FALSE>>=
 
+source("scripts/load_data.R")
 source("scripts/exploratory.R")
+source("scripts/modeling.R")
 
 @
 
@@ -136,6 +138,10 @@ source("scripts/exploratory.R")
 \pagenumbering{arabic}
 
 <<exploratory_analysis_section, child='./sections/exploratory_analysis.Rnw', vps_LogExecutionTime=TRUE, eval=TRUE>>=
+
+@
+
+<<modeling_section, child='./sections/modeling.Rnw', vps_LogExecutionTime=TRUE, eval=TRUE>>=
 
 @
 
