@@ -74,7 +74,8 @@ pim_columns_to_merge <- c(
   "PIM3 Recovery from Surgery",
   "PIM3 - No Very High Risk Dx",       
   "PIM3 - No High Risk Dx",    
-  "PIM3 - No Low Risk Dx"    
+  "PIM3 - No Low Risk Dx", 
+  "PIM3 Probability of Death"
 )
 admit <- merge(admit, PIM[, pim_columns_to_merge], all.x = TRUE, all.y = FALSE)
 
@@ -101,6 +102,7 @@ admit <- make_numeric(admit, "Post-Operative")
 admit <- make_numeric(admit, "Acute Diabetes")
 admit <- make_numeric(admit, "Cardiac Massage Prior to ICU Admission")
 proc <- make_numeric(proc, "Procedure Duration (Constrained to ICU Stay Days)")
+admit <- make_numeric(admit, "PIM3 Probability of Death")
 
 
 #### Create new fields ####
@@ -142,10 +144,17 @@ admit$prism3score_sq <- admit[["PRISM 3 Score"]]^2
 admit$is_neonate <- 0
 admit$is_neonate[admit[["Age at ICU Admission"]] == "Neonate Birth to 29 days"] <- 1
 
+admit$is_over18 <- 0
+admit$is_over18[admit[["Age at ICU Admission"]] %in% c("Adolescent (late) 18 years to < 21 years", "Adult 21 years and up")] <- 1
+
 admit[["Admission from Inpatient Unit"]][is.na(admit[["Admission from Inpatient Unit"]])] <- 0
 admit[["Post-Operative"]][is.na(admit[["Post-Operative"]])] <- 0
 admit[["Acute Diabetes"]][is.na(admit[["Acute Diabetes"]])] <- 0
 admit[["Cardiac Massage Prior to ICU Admission"]][is.na(admit[["Cardiac Massage Prior to ICU Admission"]])] <- 0
+#admit[["High Platelet Count (10(9)/L)"]][is.na(admit[["High Platelet Count (10(9)/L)"]])] <- 0
+#admit[["High Creatinine (mg/dL)"]][is.na(admit[["High Creatinine (mg/dL)"]])] <- 0
+#admit[["High Blood Urea Nitrogen (mg/dL)"]][is.na(admit[["High Blood Urea Nitrogen (mg/dL)"]])] <- 0
+
 
 # PIM 3 variables
 admit$pupils_fixed_to_light <- ifelse(admit$`PIM3 Pupillary Reaction` == ">3mm and both fixed", 1, 0)
@@ -182,12 +191,18 @@ admit$islowriskdx <- ifelse(
 proc <- merge(proc, admit[c("Case Index Id", "Outcome")], all.x = TRUE, all.y = FALSE)
 proc_ecmo <- proc[proc$`Procedure Name` == "ECMO", ]
 
-admit_excluding_neonates <- admit[admit$`Age at ICU Admission` != "Neonate Birth to 29 days", ]
-admit_only_neonates <- admit[admit$`Age at ICU Admission` == "Neonate Birth to 29 days", ]
-
 admit_PRISM3 <- admit[admit$`Collects PRISM 3` != 0, ]
 admit_PRISM3_excluding_neonates <- admit_PRISM3[admit_PRISM3$`Age at ICU Admission` != "Neonate Birth to 29 days", ]
 admit_PRISM3_only_neonates <- admit_PRISM3[admit_PRISM3$`Age at ICU Admission` == "Neonate Birth to 29 days", ]
+
+admit$has_ecmo_va <- as.integer(admit$has_ecmo_va)
+admit$has_ecmo_vv <- as.integer(admit$has_ecmo_vv)
+admit$has_cpr_within_60min <- as.integer(admit$has_cpr_within_60min)
+
+admit$has_renal <- ifelse(admit$`Case Index Id` %in% proc[proc$Category=="Renal and Hepatic Support", ]$`Case Index Id`, 1, 0)  
+
+admit_excluding_neonates <- admit[admit$`Age at ICU Admission` != "Neonate Birth to 29 days", ]
+admit_only_neonates <- admit[admit$`Age at ICU Admission` == "Neonate Birth to 29 days", ]
 
 admit_filter <- admit[admit$`Collects PRISM 3` != 0, ]
 
@@ -212,6 +227,38 @@ col_model_1 <- c(
   "isrecoverynoncardiac",
   "isveryhighriskdx",
   "ishighriskdx",
-  "islowriskdx"
+  "islowriskdx",
+  "has_ecmo_va",
+  "has_ecmo_vv",
+  "has_cpr_within_60min",
+  "Weight (kg)",
+  "has_renal",
+  "is_over18"
 )
-model_1 <- admit_PRISM3[, col_model_1]
+model_1 <- admit_filter[, col_model_1]
+
+null_model <- admit_filter$Died
+
+
+col_model_3 <- c(
+  "Died",
+  "is_neonate",
+  "has_ecmo_va",
+  "has_ecmo_vv",
+  "has_cpr_within_60min",
+  "Weight (kg)",
+  "is_over18",
+  "High Platelet Count (10(9)/L)", 
+  "High Creatinine (mg/dL)", 
+  "High Blood Urea Nitrogen (mg/dL)",
+  "High Systolic Blood Pressure (mmHg)",
+  "Low Systolic Blood Pressure (mmHg)",
+  "Low Heart Rate (bpm)",
+  "High Heart Rate (bpm)",
+  "Low PaO2 (mmHg)",
+  "Low Platelet Count (10(9)/L)"
+)
+model_3 <- admit_filter[, col_model_3]
+
+
+
