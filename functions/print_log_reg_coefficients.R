@@ -42,7 +42,7 @@ print_log_reg_coefficients <- function(model) {
       `VIF` = vif
     ) %>%
     mutate(`Odds Ratio (95% CI)` = ifelse(Variable == "(Intercept)", "-", `Odds Ratio (95% CI)`)) %>%
-    select(c("Variable", "Coefficients (95% CI)", "Odds Ratio (95% CI)", "p-value", "VIF")) %>%
+    dplyr::select(c("Variable", "Coefficients (95% CI)", "Odds Ratio (95% CI)", "p-value", "VIF")) %>%
     mutate(across(everything(), as.character)) %>%
     mutate(across(everything(), ~ coalesce(na_if(., "-"), "-"))) %>%
     mutate(Variable = dplyr::recode(
@@ -58,7 +58,12 @@ print_log_reg_coefficients <- function(model) {
       "isrecoverynoncardiac" = "Recovery from Non-Cardiac",
       "isveryhighriskdx" = "Very High-Risk Diagnosis",
       "ishighriskdx" = "High-Risk Diagnosis",
-      "islowriskdx" = "Low-Risk Diagnosis"
+      "islowriskdx" = "Low-Risk Diagnosis",
+      "has_ecmo_va" = "VA ECMO",
+      "has_ecmo_vv" = "VV ECMO",
+      "has_cpr_within_60min" = "eCPR",
+      "has_renal" = "Renal Procedure",
+      "is_over18" = "18 Years or Older"
     ))
 
   print(

@@ -7,6 +7,7 @@ require(pROC)
 require(ResourceSelection)
 require(givitiR)
 require(car)
+require(MASS)
 
 source("functions/create_table.r")
 source("functions/create_bar_graph.r")
@@ -18,6 +19,7 @@ source("functions/make_numeric.r")
 source("functions/create_summary.r")
 source("functions/sum_stats.r")
 source("functions/plot_roc_curve.r")
+source("functions/plot_roc_curve_comparison.r")
 source("functions/pretty_decimal.r")
 source("functions/pretty_integer.r")
 source("functions/pretty_latex.r")
@@ -74,8 +76,7 @@ pim_columns_to_merge <- c(
   "PIM3 Recovery from Surgery",
   "PIM3 - No Very High Risk Dx",       
   "PIM3 - No High Risk Dx",    
-  "PIM3 - No Low Risk Dx", 
-  "PIM3 Probability of Death"
+  "PIM3 - No Low Risk Dx"
 )
 admit <- merge(admit, PIM[, pim_columns_to_merge], all.x = TRUE, all.y = FALSE)
 
@@ -108,13 +109,21 @@ admit <- make_numeric(admit, "PIM3 Probability of Death")
 #### Create new fields ####
 ecmo <- proc[proc$`Procedure Code` == 135, ]
 ecmo <- merge(ecmo, proc_vars, by.x = "Procedure Id", by.y = "Procedure Code", all.x = TRUE, all.y = FALSE)
-admit$has_ecmo_va <- (admit$`Case Index Id` %in%
-                        ecmo[ecmo$`Variable Name` == "VA ECMO" & !is.na(ecmo$`Variable Name`), ]$`Case Index Id.x`)
-admit$has_ecmo_vv <- (admit$`Case Index Id` %in%
-                        ecmo[ecmo$`Variable Name` == "VV ECMO" & !is.na(ecmo$`Variable Name`), ]$`Case Index Id.x`)
+admit$has_ecmo_va <- ifelse(
+  admit$`Case Index Id` %in% ecmo[ecmo$`Variable Name` == "VA ECMO" & !is.na(ecmo$`Variable Name`), ]$`Case Index Id.x`,
+  1, 0
+)
+admit$has_ecmo_vv <- ifelse(
+  admit$`Case Index Id` %in% ecmo[ecmo$`Variable Name` == "VV ECMO" & !is.na(ecmo$`Variable Name`), ]$`Case Index Id.x`,
+  1, 0
+)
+admit$has_renal <- ifelse(
+  admit$`Case Index Id` %in% proc[proc$Category=="Renal and Hepatic Support", ]$`Case Index Id`, 
+  1, 0
+)  
 
 cpr <- proc[proc$`Procedure Code` == 133, ]
-admit$has_cpr_within_60min <- FALSE
+admit$has_cpr_within_60min <- 0
 for (i in 1:nrow(cpr)) {
   id <- as.character(cpr[i, "Case Index Id"])
   case_ecmo <- ecmo[ecmo$`Case Index Id.x` == id, ]
@@ -131,7 +140,7 @@ for (i in 1:nrow(cpr)) {
   
   if (admit[admit$`Case Index Id` == id, "has_cpr_within_60min"] == FALSE) {
     admit[admit$`Case Index Id` == id, "has_cpr_within_60min"] <-
-      (sum(case_ecmo$has_cpr_within_60min) > 0)
+      ifelse(sum(case_ecmo$has_cpr_within_60min) > 0, 1, 0)
   }
 }
 remove(cpr, ecmo, case_ecmo)
@@ -151,10 +160,6 @@ admit[["Admission from Inpatient Unit"]][is.na(admit[["Admission from Inpatient 
 admit[["Post-Operative"]][is.na(admit[["Post-Operative"]])] <- 0
 admit[["Acute Diabetes"]][is.na(admit[["Acute Diabetes"]])] <- 0
 admit[["Cardiac Massage Prior to ICU Admission"]][is.na(admit[["Cardiac Massage Prior to ICU Admission"]])] <- 0
-#admit[["High Platelet Count (10(9)/L)"]][is.na(admit[["High Platelet Count (10(9)/L)"]])] <- 0
-#admit[["High Creatinine (mg/dL)"]][is.na(admit[["High Creatinine (mg/dL)"]])] <- 0
-#admit[["High Blood Urea Nitrogen (mg/dL)"]][is.na(admit[["High Blood Urea Nitrogen (mg/dL)"]])] <- 0
-
 
 # PIM 3 variables
 admit$pupils_fixed_to_light <- ifelse(admit$`PIM3 Pupillary Reaction` == ">3mm and both fixed", 1, 0)
@@ -195,16 +200,8 @@ admit_PRISM3 <- admit[admit$`Collects PRISM 3` != 0, ]
 admit_PRISM3_excluding_neonates <- admit_PRISM3[admit_PRISM3$`Age at ICU Admission` != "Neonate Birth to 29 days", ]
 admit_PRISM3_only_neonates <- admit_PRISM3[admit_PRISM3$`Age at ICU Admission` == "Neonate Birth to 29 days", ]
 
-admit$has_ecmo_va <- as.integer(admit$has_ecmo_va)
-admit$has_ecmo_vv <- as.integer(admit$has_ecmo_vv)
-admit$has_cpr_within_60min <- as.integer(admit$has_cpr_within_60min)
-
-admit$has_renal <- ifelse(admit$`Case Index Id` %in% proc[proc$Category=="Renal and Hepatic Support", ]$`Case Index Id`, 1, 0)  
-
 admit_excluding_neonates <- admit[admit$`Age at ICU Admission` != "Neonate Birth to 29 days", ]
 admit_only_neonates <- admit[admit$`Age at ICU Admission` == "Neonate Birth to 29 days", ]
-
-admit_filter <- admit[admit$`Collects PRISM 3` != 0, ]
 
 col_model_1 <- c(
   "Died",
@@ -235,18 +232,17 @@ col_model_1 <- c(
   "has_renal",
   "is_over18"
 )
-model_1 <- admit_filter[, col_model_1]
+model_1 <- admit_PRISM3[, c("Case Index Id", col_model_1)]
+model_1 <- model_1[complete.cases(model_1),]
 
-null_model <- admit_filter$Died
-
-
-col_model_3 <- c(
+col_model_2 <- c(
   "Died",
   "is_neonate",
   "has_ecmo_va",
   "has_ecmo_vv",
   "has_cpr_within_60min",
   "Weight (kg)",
+  "has_renal",
   "is_over18",
   "High Platelet Count (10(9)/L)", 
   "High Creatinine (mg/dL)", 
@@ -258,7 +254,5 @@ col_model_3 <- c(
   "Low PaO2 (mmHg)",
   "Low Platelet Count (10(9)/L)"
 )
-model_3 <- admit_filter[, col_model_3]
-
-
-
+model_2 <- admit_PRISM3[, c("Case Index Id", col_model_2)]
+model_2 <- model_2[complete.cases(model_2),]
