@@ -11,17 +11,80 @@
 
 <<results="asis", echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE>>=
 
-model_name = "Model 1: All PIM3/PRISM III Variables"
+model_name = "Model 1: Full Model - PIM3/PRISM III Variables"
 
-model = log_reg_model1
-train = training1
-test = testing1
-ROC = roc_obj1
-HOSLEM = hl_test1
-GIVITI = giviti_belt1
+model = log_reg_model_1a
+train = training_1
+test = testing_1
+ROC = roc_obj_1a
+HOSLEM = hl_test_1a
+GIVITI = giviti_belt_1a
+pred = "pred_model_1a"
 
 @
   
 <<modeling_model1_section, child='./modeling_results.Rnw', vps_LogExecutionTime=TRUE, eval=TRUE>>=
+
+@
+
+
+<<results="asis", echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE>>=
+
+model_name = "Model 2: Forward Selection by AIC - PIM3/PRISM III Variables"
+
+model = log_reg_model_1b
+train = training_1
+test = testing_1
+ROC = roc_obj_1b
+HOSLEM = hl_test_1b
+GIVITI = giviti_belt_1b
+pred = "pred_model_1b"
+
+@
+  
+<<modeling_model2_section, child='./modeling_results.Rnw', vps_LogExecutionTime=TRUE, eval=TRUE>>=
+
+@
+
+
+<<results="asis", echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE>>=
+
+model_name = "Model 3: Full Model - Exploratory Analysis Variables"
+
+model = log_reg_model_2a
+train = training_2
+test = testing_2
+ROC = roc_obj_2a
+HOSLEM = hl_test_2a
+GIVITI = giviti_belt_2a
+pred = "pred_model_2a"
+
+@
+  
+<<modeling_model3_section, child='./modeling_results.Rnw', vps_LogExecutionTime=TRUE, eval=TRUE>>=
+
+@
+
+
+<<results="asis", echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE>>=
+
+model_name = "Model 4: Forward Selection by AIC - Exploratory Analysis Variables"
+
+model = log_reg_model_2b
+train = training_2
+test = testing_2
+ROC = roc_obj_2b
+HOSLEM = hl_test_2b
+GIVITI = giviti_belt_2b
+pred = "pred_model_2b"
+
+@
+  
+<<modeling_model4_section, child='./modeling_results.Rnw', vps_LogExecutionTime=TRUE, eval=TRUE>>=
+
+@
+
+
+<<modeling_comparison_section, child='./modeling_comparison.Rnw', vps_LogExecutionTime=TRUE, eval=TRUE>>=
 
 @

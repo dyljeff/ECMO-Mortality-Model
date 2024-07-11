@@ -1,0 +1,25 @@
+\clearpage
+\section{Model Performance Comparison}
+
+\begin{table}[H]
+\begin{tabular}{cc}
+<<echo=FALSE, results="asis", message=FALSE, fig.width=6, fig.height=6, out.width="3.3in", out.height="3.3in", warning=FALSE>>=
+
+plot_roc_curve_comparison(
+  roc_obj_pim3_1, roc_obj_prism3_1, roc_obj_1a, roc_obj_1b,
+  model_a_name = "Model 1", model_b_name = "Model 2"
+)
+
+@
+&
+<<echo=FALSE, results="asis", message=FALSE, fig.width=6, fig.height=6, out.width="3.3in", out.height="3.3in", warning=FALSE>>=
+
+plot_roc_curve_comparison(
+  roc_obj_pim3_2, roc_obj_prism3_2, roc_obj_2a, roc_obj_2b, 
+  model_a_name = "Model 3", model_b_name = "Model 4"
+)
+
+@
+\\
+\end{tabular}
+\end{table}

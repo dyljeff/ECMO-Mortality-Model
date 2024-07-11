@@ -12,7 +12,7 @@ deciles_tbl = print_log_reg_deciles(HOSLEM)
 
 @
   
-\noindent Standardized Mortality Ratio: \Sexpr{sum(test$Died)/sum(test$pred)}\\
+\noindent Standardized Mortality Ratio: \Sexpr{sum(test$Died)/sum(test[,pred])}\\
 \noindent Hosmer-Lemeshow Goodness-of-Fit Test: $\chi^2$ = \Sexpr{round(HOSLEM$statistic,2)},
 df = \Sexpr{HOSLEM$parameter}, p-value = \Sexpr{HOSLEM$p.value}\\
 
