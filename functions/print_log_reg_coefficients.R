@@ -63,7 +63,8 @@ print_log_reg_coefficients <- function(model) {
       "has_ecmo_vv" = "VV ECMO",
       "has_cpr_within_60min" = "eCPR",
       "has_renal" = "Renal Procedure",
-      "is_over18" = "18 Years or Older"
+      "is_over18" = "18 Years or Older",
+      "time_before_first_ecmo" = "Days to First ECMO"
     ))
 
   print(
