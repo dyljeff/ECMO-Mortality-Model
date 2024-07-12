@@ -196,6 +196,17 @@ admit$islowriskdx <- ifelse(
 proc <- merge(proc, admit[c("Case Index Id", "Outcome")], all.x = TRUE, all.y = FALSE)
 proc_ecmo <- proc[proc$`Procedure Name` == "ECMO", ]
 
+proc_first_ecmo <- proc_ecmo
+proc_first_ecmo <- proc_ecmo[order(proc_ecmo[["Procedure Start - Time Since ICU Admission (Days)"]]), ]
+proc_first_ecmo <- proc_first_ecmo[!duplicated(proc_first_ecmo[["Case Index Id"]]), ]
+proc_first_ecmo$time_before_first_ecmo <- proc_first_ecmo[["Procedure Start - Time Since ICU Admission (Days)"]]
+
+admit <- merge(admit, proc_first_ecmo[c("Case Index Id", "time_before_first_ecmo")], all.x = TRUE, all.y = FALSE)
+
+admit <- make_numeric(admit, "time_before_first_ecmo")
+admit[["time_before_first_ecmo"]][is.na(admit[["time_before_first_ecmo"]])] <- 0
+admit[["time_before_first_ecmo"]] <- ifelse(admit[["time_before_first_ecmo"]] < 0, 0, admit[["time_before_first_ecmo"]])
+
 admit_PRISM3 <- admit[admit$`Collects PRISM 3` != 0, ]
 admit_PRISM3_excluding_neonates <- admit_PRISM3[admit_PRISM3$`Age at ICU Admission` != "Neonate Birth to 29 days", ]
 admit_PRISM3_only_neonates <- admit_PRISM3[admit_PRISM3$`Age at ICU Admission` == "Neonate Birth to 29 days", ]
@@ -230,7 +241,8 @@ col_model_1 <- c(
   "has_cpr_within_60min",
   "Weight (kg)",
   "has_renal",
-  "is_over18"
+  "is_over18",
+  "time_before_first_ecmo"
 )
 model_1 <- admit_PRISM3[, c("Case Index Id", col_model_1)]
 model_1 <- model_1[complete.cases(model_1),]
@@ -252,7 +264,8 @@ col_model_2 <- c(
   "Low Heart Rate (bpm)",
   "High Heart Rate (bpm)",
   "Low PaO2 (mmHg)",
-  "Low Platelet Count (10(9)/L)"
+  "Low Platelet Count (10(9)/L)",
+  "time_before_first_ecmo"
 )
 model_2 <- admit_PRISM3[, c("Case Index Id", col_model_2)]
 model_2 <- model_2[complete.cases(model_2),]
